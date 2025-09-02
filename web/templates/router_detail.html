@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Router Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+    <h1>Interface Status for {{ router_ip }}</h1>
+
+    {% if statuses %}
+        {% for status in statuses %}
+            <h2>Timestamp: {{ status.timestamp }}</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Interface</th>
+                        <th>IP Address</th>
+                        <th>Status</th>
+                        <th>Protocol</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for interface in status.interfaces %}
+                        <tr>
+                            <td>{{ interface.interface }}</td>
+                            <td>{{ interface.ip_address }}</td>
+                            <td>{{ interface.status }}</td>
+                            <td>{{ interface.proto }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if not loop.last %}
+                <hr>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <p>No status data found for this router.</p>
+    {% endif %}
+
+    <a href="/">Back to main page</a>
+</body>
+</html>
