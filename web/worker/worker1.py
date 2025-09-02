@@ -7,15 +7,19 @@ from pymongo import MongoClient
 from datetime import datetime
 
 
-# MongoDB client
 def get_mongo_client():
+    """
+    Creates and returns a MongoDB client instance.
+    """
     mongo_uri = os.environ.get("MONGO_URI")
     db_name = os.environ.get("DB_NAME")
     return MongoClient(mongo_uri)[db_name]
 
 
-# Callback function to process messages
 def process_message(ch, method, properties, body):
+    """
+    Processes messages from the RabbitMQ queue.
+    """
     try:
         data = json.loads(body.decode("utf-8"))
         print(f" [x] Received {data}")
@@ -24,6 +28,12 @@ def process_message(ch, method, properties, body):
         router_ip = data.get("ip")
         username = data.get("username")
         password = data.get("password")
+
+        # Handle the case where the router IP is missing
+        if not router_ip:
+            print(" [!] Missing router IP in message data. Skipping.")
+            ch.basic_ack(delivery_tag=method.delivery_tag)
+            return
 
         net_connect = ConnectHandler(
             device_type="cisco_ios",
@@ -50,13 +60,16 @@ def process_message(ch, method, properties, body):
         print(f" [x] Data from {router_ip} saved to MongoDB.")
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
-    except Exception as e:
-        print(f" [!] An error occurred: {e}")
+    except Exception as error:
+        print(f" [!] An error occurred: {error}")
         # Acknowledge the message to remove it from the queue
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
 def main():
+    """
+    Main function to connect to RabbitMQ and start consuming messages.
+    """
     rabbitmq_user = os.getenv("RABBITMQ_DEFAULT_USER")
     rabbitmq_pass = os.getenv("RABBITMQ_DEFAULT_PASS")
     credentials = pika.PlainCredentials(rabbitmq_user, rabbitmq_pass)
@@ -66,8 +79,8 @@ def main():
     while not connection:
         try:
             connection = pika.BlockingConnection(params)
-        except pika.exceptions.AMQPConnectionError as e:
-            print(f" [!] Failed to connect to RabbitMQ, retrying in 5 seconds...")
+        except pika.exceptions.AMQPConnectionError:
+            print(" [!] Failed to connect to RabbitMQ, retrying in 5 seconds...")
             time.sleep(5)
 
     channel = connection.channel()
