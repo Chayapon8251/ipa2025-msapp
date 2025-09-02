@@ -1,0 +1,17 @@
+FROM python:3.12-slim
+
+# กำหนด working directory ภายใน container
+WORKDIR /app
+
+# คัดลอกไฟล์ requirements.txt
+# จากโฟลเดอร์แม่ไปยัง working directory
+COPY ../requirements.txt .
+
+# ติดตั้ง packages ที่จำเป็น
+RUN pip install --no-cache-dir -r requirements.txt
+
+# คัดลอกทุกไฟล์ในโฟลเดอร์ scheduler ไปยัง container
+COPY . .
+
+# กำหนด command เริ่มต้นเมื่อ container ทำงาน
+CMD ["python3","-u", "scheduler.py"]

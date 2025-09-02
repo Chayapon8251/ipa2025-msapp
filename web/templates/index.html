@@ -1,28 +1,32 @@
 <html>
 <head>
-    <title>Sample app</title>
-    <link rel="stylesheet" href="/static/style.css" />
+    <title>Router Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
-    <h1>Router Register</h1>
+    <h1>Router Registration</h1>
     <form method="POST" action="/add">
-    <input name="ip" placeholder="YourIP" required />
-    <input name="username" placeholder="Yourusername" required />
-    <input name="password" placeholder="Yourupassword" required />
-    <button type="submit">Add</button>
-  </form>
-  <h1>Router</h1>
-  <ul>
-    {% for router in routers %}
-      <li>
-	       {{ router.ip }} - {{ router.username }}	 
-         <form method="POST" action="{{ url_for('delete_router', id=router._id) }}" style="display:inline">
-           <!-- <input type="hidden" name="idx" value="{{ loop.index0 }}"> -->
-           <button type="submit">Delete</button>
-         </form>
-      </li>
-    {% endfor %}
-  </ul>
+        <input name="ip" placeholder="YourIP" required />
+        <input name="username" placeholder="Yourusername" required />
+        <input name="password" placeholder="Yourpassword" required />
+        <button type="submit">Add</button>
+    </form>
 
+    <hr>
+
+    <h1>Registered Routers</h1>
+    <ul>
+        {% for router in routers %}
+        <li>
+            <a href="{{ url_for('router_detail', ip_address=router.ip) }}">
+                {{ router.ip }}
+            </a>
+            - {{ router.username }}
+            <form method="POST" action="{{ url_for('delete_router', id=router._id) }}" style="display:inline">
+                <button type="submit">Delete</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

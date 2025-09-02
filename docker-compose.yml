@@ -5,6 +5,7 @@ services:
       - "8080:8080"
     depends_on:
       - mongo
+      - rabbitmq
     networks:
       - app-net
     env_file:
@@ -12,7 +13,6 @@ services:
     environment:
       MONGO_URI: "mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/"
       DB_NAME: "mydatabase"
-
 
   mongo:
     image: mongo:6
@@ -24,11 +24,48 @@ services:
       - app-net
     env_file:
       - .env
-    # healthcheck:
-    #   test: ["CMD", "mongosh", "--quiet", "mongodb://localhost:27017", "--eval", "db.adminCommand({ping:1})"]
-    #   interval: 5s
-    #   timeout: 3s
-    #   retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app-net
+    environment:
+      RABBITMQ_DEFAULT_USER: "admin"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+
+  scheduler:
+    build:
+      context: ./web/scheduler
+      dockerfile: Dockerfile.scheduler
+    depends_on:
+      - rabbitmq
+    networks:
+      - app-net
+    env_file:
+      - .env
+    environment:
+      MONGO_URI: "mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/"
+
+  worker:
+    build:
+      context: ./web/worker
+      dockerfile: Dockerfile.worker
+    depends_on:
+      - rabbitmq
+      - mongo
+    networks:
+      - app-net
+    env_file:
+      - .env
+    environment:
+      MONGO_URI: "mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/"
+      DB_NAME: "mydatabase"
+      RABBITMQ_DEFAULT_USER: "admin"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+
 
 volumes:
   mongo-data:

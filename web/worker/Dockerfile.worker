@@ -1,0 +1,14 @@
+FROM python:3.12-slim
+
+# กำหนด working directory
+WORKDIR /app
+
+# คัดลอกและติดตั้ง requirements
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# คัดลอกโค้ด
+COPY . .
+
+# กำหนด command
+CMD ["python3","-u", "worker1.py"]
