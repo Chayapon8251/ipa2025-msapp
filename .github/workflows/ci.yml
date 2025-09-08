@@ -42,10 +42,10 @@ jobs:
 
     - name: Build & Push Docker Images
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }/worker:latest -f ./web/worker/Dockerfile.worker ./web/worker
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }/scheduler:latest -f ./web/scheduler/Dockerfile.scheduler ./web/scheduler
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }/web:latest -f ./web/Dockerfile ./web
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/worker:latest -f ./web/worker/Dockerfile.worker ./web/worker
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/scheduler:latest -f ./web/scheduler/Dockerfile.scheduler ./web/scheduler
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/web:latest -f ./web/Dockerfile ./web
 
-        docker push ${{ secrets.DOCKERHUB_USERNAME }/worker:latest
-        docker push ${{ secrets.DOCKERHUB_USERNAME }/scheduler:latest
-        docker push ${{ secrets.DOCKERHUB_USERNAME }/web:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/worker:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/scheduler:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/web:latest
