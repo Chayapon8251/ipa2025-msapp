@@ -42,8 +42,8 @@ jobs:
 
     - name: Build & Push Docker Images
       run: |
-        docker build -t 66070039/worker:latest .web/worker/
-        docker build -t 66070039/scheduler:latest .web/scheduler/
+        docker build -t 66070039/worker:latest ./web/worker/
+        docker build -t 66070039/scheduler:latest ./web/scheduler/
         docker build -t 66070039/web:latest ./web
 
         docker push 66070039/worker:latest
