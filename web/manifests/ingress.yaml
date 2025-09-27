@@ -6,12 +6,13 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: ipa2025-msapp-web-service
-                port:
-                  number: 80
+  - host: "ipa2025.msapp.com"  # <-- เพิ่ม Hostname ตรงนี้
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ipa2025-msapp-web-service
+            port:
+              number: 80
