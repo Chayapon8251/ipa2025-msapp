@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: ipa2025-msapp-worker
-          image: fewza49144/worker:latest
+          image: 66070039/worker:latest
           envFrom:
             - secretRef:
                 name: "allpass
