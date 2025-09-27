@@ -1,0 +1,54 @@
+# ----------------- Service for MongoDB ----------------- #
+# สร้าง Service เพื่อให้แอป web สามารถหา MongoDB เจอผ่านชื่อ DNS คงที่
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service # <-- นี่คือ "hostname" ของ MongoDB ภายใน Cluster
+  namespace: ipa2025
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+  selector:
+    app: mongo
+  type: ClusterIP # ใช้แค่ภายใน Cluster ไม่ต้องเปิดออกข้างนอก
+
+---
+# ----------------- StatefulSet for MongoDB ----------------- #
+# ใช้ StatefulSet สำหรับ Database เพื่อจัดการข้อมูลและ Network ได้ดีกว่า
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo
+  namespace: ipa2025
+spec:
+  serviceName: "mongo-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:4.4
+        ports:
+        - containerPort: 27017
+        envFrom:
+        - secretRef:
+            name: "allpass" # ใช้ Secret เดียวกันเพื่อดึง username/password
+        volumeMounts:
+        - name: mongo-persistent-storage
+          mountPath: /data/db # map storage เข้าไปใน container
+  # สร้าง Persistent Volume Claim เพื่อจองพื้นที่เก็บข้อมูลถาวร
+  volumeClaimTemplates:
+  - metadata:
+      name: mongo-persistent-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi # ขอพื้นที่ 1 GB (ปรับเปลี่ยนได้ตามต้องการ)
