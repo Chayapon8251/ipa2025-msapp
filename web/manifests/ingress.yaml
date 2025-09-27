@@ -6,7 +6,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: "ipa2025.msapp.com"  # <-- เพิ่ม Hostname ตรงนี้
+  - host: "ipa2025.192.168.159.140.nip.io"  # <-- เพิ่ม Hostname ตรงนี้
     http:
       paths:
       - path: /
