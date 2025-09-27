@@ -39,7 +39,7 @@ spec:
         - containerPort: 27017
         envFrom:
         - secretRef:
-            name: "allpass" # ใช้ Secret เดียวกันเพื่อดึง username/password
+            name: "allpass"
         volumeMounts:
         - name: mongo-persistent-storage
           mountPath: /data/db # map storage เข้าไปใน container
@@ -48,6 +48,7 @@ spec:
   - metadata:
       name: mongo-persistent-storage
     spec:
+      storageClassName: "local-path"
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
