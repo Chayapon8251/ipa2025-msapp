@@ -71,8 +71,9 @@ def main():
     """
     Main function to connect to RabbitMQ and start consuming messages.
     """
-    rabbitmq_user = os.getenv("RABBITMQ_DEFAULT_USER")
-    rabbitmq_pass = os.getenv("RABBITMQ_DEFAULT_PASS")
+#     rabbitmq_host = os.getenv("RABBITMQ_HOST", "rabbitmq") # ใส่ "rabbitmq" เป็นค่า default เผื่อทดสอบใน docker-compose
+    rabbitmq_user = os.getenv("RABBITMQ_USER")
+    rabbitmq_pass = os.getenv("RABBITMQ_PASS")
     credentials = pika.PlainCredentials(rabbitmq_user, rabbitmq_pass)
     params = pika.ConnectionParameters(host="rabbitmq", credentials=credentials)
 
