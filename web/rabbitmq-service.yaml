@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-service
+  namespace: ipa2025
+spec:
+  selector:
+    app: rabbitmq  
+  ports:
+    - name: amqp
+      protocol: TCP
+      port: 5672       # Port ที่ worker จะเข้ามาคุย
+      targetPort: 5672
+    - name: http-management
+      protocol: TCP
+      port: 15672      # Port สำหรับหน้าเว็บ Management UI
+      targetPort: 15672

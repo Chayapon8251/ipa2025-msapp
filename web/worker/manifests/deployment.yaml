@@ -18,7 +18,7 @@ spec:
           image: 66070039/worker:latest
           envFrom:
             - secretRef:
-                name: "allpass
+                name: "allpass"
           resources:
             requests:
               cpu: "50m"
