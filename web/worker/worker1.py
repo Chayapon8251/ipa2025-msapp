@@ -5,6 +5,7 @@ import time
 from netmiko import ConnectHandler
 from pymongo import MongoClient
 from datetime import datetime
+from consumer import consume
 
 
 def get_mongo_client():

@@ -1,18 +1,17 @@
 import time
 
+import os
 from bson import json_util
 from producer import produce
 from database import get_router_info
 
 
 def scheduler():
-    """
-    This function acts as a scheduler, fetching router info from the database
-    and publishing it to a RabbitMQ queue at a fixed interval.
-    """
-    INTERVAL = 10.0
+
+    INTERVAL = 60.0
     next_run = time.monotonic()
     count = 0
+    host = os.getenv("RABBITMQ_HOST")
 
     while True:
         now = time.time()
@@ -23,13 +22,11 @@ def scheduler():
 
         try:
             for data in get_router_info():
-                if data:
-                    body_bytes = json_util.dumps(data).encode("utf-8")
-                    produce("rabbitmq", body_bytes)
+                body_bytes = json_util.dumps(data).encode("utf-8")
+                produce(host, body_bytes)
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(e)
             time.sleep(3)
-
         count += 1
         next_run += INTERVAL
         time.sleep(max(0.0, next_run - time.monotonic()))

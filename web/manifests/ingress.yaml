@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: ipa2025-msapp-web-ingress
   namespace: ipa2025
+  annotations:
+    argocd.argoproj.io/health: "healthy"
 spec:
   ingressClassName: nginx
   rules:
