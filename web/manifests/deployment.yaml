@@ -4,7 +4,7 @@ metadata:
   name: ipa2025-msapp-web
   namespace: ipa2025
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: ipa2025-msapp-web
